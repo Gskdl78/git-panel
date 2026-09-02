@@ -77,6 +77,46 @@ QCheckBox, QRadioButton {
     color: #e0e0e0;
 }
 
+/* 原生指示器在 #1e1e1e 上幾乎看不見，改為自繪：空心灰框 vs 實心藍點 */
+QRadioButton::indicator {
+    width: 14px;
+    height: 14px;
+    border-radius: 8px;
+    border: 2px solid #8a8a8a;
+    background: #252526;
+}
+
+QRadioButton::indicator:checked {
+    border: 2px solid #4cc2ff;
+    background: #4cc2ff;
+}
+
+QRadioButton::indicator:disabled {
+    border: 2px solid #4a4a4a;
+    background: #2a2a2a;
+}
+
+QCheckBox::indicator,
+QListWidget::indicator {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    border: 2px solid #8a8a8a;
+    background: #252526;
+}
+
+QCheckBox::indicator:checked,
+QListWidget::indicator:checked {
+    border: 2px solid #4cc2ff;
+    background: #4cc2ff;
+}
+
+QCheckBox::indicator:disabled,
+QListWidget::indicator:disabled {
+    border: 2px solid #4a4a4a;
+    background: #2a2a2a;
+}
+
 QMenu {
     background-color: #252526;
     color: #e0e0e0;
