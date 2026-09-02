@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from PySide6.QtWidgets import (
-    QHBoxLayout,
+    QGridLayout,
     QMessageBox,
     QPushButton,
     QTextEdit,
@@ -26,14 +26,17 @@ class CommitSection(QWidget):
         self.message.setMaximumHeight(60)
         lay.addWidget(self.message)
 
-        row = QHBoxLayout()
+        # 2x2 排列：四顆中文按鈕擠成一列會把面板最小寬度推到 320 以上
+        grid = QGridLayout()
         self.btn_commit = QPushButton("提交")
         self.btn_push = QPushButton("推送")
         self.btn_pull = QPushButton("拉取")
         self.btn_sync = QPushButton("同步")
-        for b in (self.btn_commit, self.btn_push, self.btn_pull, self.btn_sync):
-            row.addWidget(b)
-        lay.addLayout(row)
+        grid.addWidget(self.btn_commit, 0, 0)
+        grid.addWidget(self.btn_push, 0, 1)
+        grid.addWidget(self.btn_pull, 1, 0)
+        grid.addWidget(self.btn_sync, 1, 1)
+        lay.addLayout(grid)
 
         self.btn_commit.clicked.connect(self._commit)
         self.btn_push.clicked.connect(self._push)

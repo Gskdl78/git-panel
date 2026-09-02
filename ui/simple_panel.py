@@ -20,6 +20,7 @@ class SimplePanel(QWidget):
     def __init__(self, cwd: str, on_ready: Callable[[str], None]):
         super().__init__(None, Qt.Tool | Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_ShowWithoutActivating)
+        self.setFixedWidth(self.WIDTH)
         self.cwd = cwd
         self.on_ready = on_ready
 

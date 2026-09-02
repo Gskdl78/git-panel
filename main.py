@@ -39,10 +39,10 @@ def place_panel(panel, left: int, top: int, right: int, bottom: int) -> None:
     screen = panel.screen() or QApplication.primaryScreen()
     ratio = screen.devicePixelRatio() if screen else 1.0
     panel.setGeometry(
-        int(right / ratio),
-        int(top / ratio),
+        round(right / ratio),
+        round(top / ratio),
         GitPanel.WIDTH,
-        int((bottom - top) / ratio),
+        round((bottom - top) / ratio),
     )
 
 
@@ -94,6 +94,8 @@ class App:
             place_panel(self.panel, *self._last_rect)
         self.panel.show()
         old.close()
+        # _on_repo_ready 是在 old 自己的 click handler 裡執行的，直接刪會炸；deleteLater 才安全
+        old.deleteLater()
 
 
 def main() -> int:
@@ -114,7 +116,8 @@ def main() -> int:
     # 提前註冊會在「鎖被別人持有」時誤刪對方的鎖。
     atexit.register(lockfile.release, hwnd)
 
-    App(app, args.cwd, hwnd, args.pid)
+    # 保留參考：面板生命週期不該只靠 PySide 的訊號內部持有
+    app_controller = App(app, args.cwd, hwnd, args.pid)  # noqa: F841
     return app.exec()
 
 

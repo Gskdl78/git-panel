@@ -17,6 +17,7 @@ class GitPanel(QWidget):
     def __init__(self, service: GitService):
         super().__init__(None, Qt.Tool | Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_ShowWithoutActivating)
+        self.setFixedWidth(self.WIDTH)
         self.service = service
         self.status = RepoStatus()
         self.sections: list = []
