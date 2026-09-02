@@ -24,3 +24,24 @@ def test_confirm_dialog_builds(qtbot):
     dlg = _build_dialog(None, "推送", "說明文字", "git push", danger=True)
     qtbot.addWidget(dlg)
     assert "確認" in dlg.windowTitle()
+
+
+def test_danger_dialog_enter_defaults_to_cancel(qtbot):
+    from PySide6.QtWidgets import QPushButton
+    from ui.confirm_dialog import _build_dialog
+    dlg = _build_dialog(None, "重設", "說明", "git reset --hard abc", danger=True)
+    qtbot.addWidget(dlg)
+    buttons = {b.text(): b for b in dlg.findChildren(QPushButton)}
+    assert set(buttons) == {"我了解風險，執行", "取消"}
+    assert not buttons["我了解風險，執行"].autoDefault()
+    assert buttons["取消"].isDefault()
+
+
+def test_output_log_preserves_newlines(qtbot):
+    from ui.output_log import OutputLog
+    log = OutputLog()
+    qtbot.addWidget(log)
+    log.log_error("error: line1\nhint: line2")
+    text = log.toPlainText()
+    assert "line1" in text and "line2" in text
+    assert "line1 hint" not in text  # 沒有被折成同一行

@@ -5,6 +5,11 @@ import html
 from PySide6.QtWidgets import QTextEdit
 
 
+def _fmt(text: str) -> str:
+    """跳脫 HTML 並保留換行（append 走 rich text 路徑，\\n 會被折成空白）。"""
+    return html.escape(text).replace("\n", "<br>")
+
+
 class OutputLog(QTextEdit):
     def __init__(self):
         super().__init__()
@@ -13,15 +18,15 @@ class OutputLog(QTextEdit):
         self.setMaximumHeight(140)
 
     def log_command(self, command: str) -> None:
-        self.append(f'<span style="color:#888">&gt; {html.escape(command)}</span>')
+        self.append(f'<span style="color:#888">&gt; {_fmt(command)}</span>')
 
     def log_ok(self, text: str = "完成 ✓") -> None:
-        self.append(f'<span style="color:#2a7a2a">{html.escape(text)}</span>')
+        self.append(f'<span style="color:#2a7a2a">{_fmt(text)}</span>')
 
     def log_error(self, raw: str, explanation: str | None = None) -> None:
         if explanation:
             self.append(
-                f'<span style="color:#c00000;font-weight:bold">{html.escape(explanation)}</span>'
+                f'<span style="color:#c00000;font-weight:bold">{_fmt(explanation)}</span>'
             )
         if raw.strip():
-            self.append(f'<span style="color:#c00000">{html.escape(raw.strip())}</span>')
+            self.append(f'<span style="color:#c00000">{_fmt(raw.strip())}</span>')

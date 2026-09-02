@@ -35,9 +35,12 @@ def _build_dialog(parent, title: str, description: str, command: str, danger: bo
     row = QHBoxLayout()
     row.addStretch()
     ok = QPushButton("我了解風險，執行" if danger else "確認")
+    cancel = QPushButton("取消")
     if danger:
         ok.setStyleSheet("background: #c00000; color: white; padding: 4px 12px;")
-    cancel = QPushButton("取消")
+        # 危險操作：Enter 不應觸發破壞性按鈕，預設落在「取消」
+        ok.setAutoDefault(False)
+        cancel.setDefault(True)
     ok.clicked.connect(dlg.accept)
     cancel.clicked.connect(dlg.reject)
     row.addWidget(ok)
