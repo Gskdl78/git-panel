@@ -130,6 +130,44 @@ class GitService:
     def init(self) -> GitResult:
         return self.run("init", "-b", "main")
 
+    def branches(self) -> list[str]:
+        r = self.run("branch", "--format=%(refname:short)")
+        return [b for b in r.stdout.splitlines() if b]
+
+    def current_branch(self) -> str:
+        return self.run("branch", "--show-current").stdout.strip()
+
+    def switch(self, name: str) -> GitResult:
+        return self.run("switch", name)
+
+    def create_branch(self, name: str) -> GitResult:
+        return self.run("switch", "-c", name)
+
+    def merge(self, name: str) -> GitResult:
+        return self.run("merge", name)
+
+    def abort_merge(self) -> GitResult:
+        return self.run("merge", "--abort")
+
+    def conflicted_files(self) -> list[str]:
+        r = self.run("diff", "--name-only", "--diff-filter=U")
+        return [l for l in r.stdout.splitlines() if l]
+
+    def stash(self) -> GitResult:
+        return self.run("stash", "push", "-u")
+
+    def stash_pop(self) -> GitResult:
+        return self.run("stash", "pop")
+
+    def reset(self, sha: str, mode: str) -> GitResult:
+        return self.run("reset", f"--{mode}", sha)
+
+    def revert(self, sha: str) -> GitResult:
+        return self.run("revert", "--no-edit", sha)
+
+    def tag(self, name: str) -> GitResult:
+        return self.run("tag", name)
+
     @staticmethod
     def clone(url: str, dest: str) -> GitResult:
         p = subprocess.run(

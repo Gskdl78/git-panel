@@ -155,3 +155,79 @@ def test_init(tmp_path):
     svc = GitService(str(d))
     assert svc.init().ok
     assert svc.is_repo()
+
+
+def test_branches_create_switch(tmp_path):
+    svc = make_repo(tmp_path)
+    (tmp_path / "a.txt").write_text("hi")
+    svc.stage("a.txt")
+    svc.commit("c1")
+    assert svc.create_branch("dev").ok
+    assert set(svc.branches()) == {"main", "dev"}
+    assert svc.status().branch == "dev"
+    assert svc.switch("main").ok
+    assert svc.status().branch == "main"
+
+
+def test_merge_and_conflict(tmp_path):
+    svc = make_repo(tmp_path)
+    (tmp_path / "a.txt").write_text("base\n")
+    svc.stage("a.txt")
+    svc.commit("c1")
+    svc.create_branch("dev")
+    (tmp_path / "a.txt").write_text("dev\n")
+    svc.stage("a.txt")
+    svc.commit("dev change")
+    svc.switch("main")
+    (tmp_path / "a.txt").write_text("main\n")
+    svc.stage("a.txt")
+    svc.commit("main change")
+    r = svc.merge("dev")
+    assert not r.ok
+    assert svc.conflicted_files() == ["a.txt"]
+    assert svc.abort_merge().ok
+
+
+def test_stash_and_pop(tmp_path):
+    svc = make_repo(tmp_path)
+    (tmp_path / "a.txt").write_text("hi")
+    svc.stage("a.txt")
+    svc.commit("c1")
+    (tmp_path / "a.txt").write_text("changed")
+    assert svc.stash().ok
+    assert svc.status().files == []
+    assert svc.stash_pop().ok
+    assert len(svc.status().files) == 1
+
+
+def test_reset_and_revert(tmp_path):
+    svc = make_repo(tmp_path)
+    (tmp_path / "a.txt").write_text("v1")
+    svc.stage("a.txt")
+    svc.commit("c1")
+    (tmp_path / "a.txt").write_text("v2")
+    svc.stage("a.txt")
+    svc.commit("c2")
+    sha1 = svc.log()[1].sha
+    assert svc.revert(svc.log()[0].sha).ok
+    assert len(svc.log()) == 3
+    assert svc.reset(sha1, "hard").ok
+    assert len(svc.log()) == 1
+
+
+def test_tag(tmp_path):
+    svc = make_repo(tmp_path)
+    (tmp_path / "a.txt").write_text("hi")
+    svc.stage("a.txt")
+    svc.commit("c1")
+    assert svc.tag("v1.0").ok
+
+
+def test_current_branch(tmp_path):
+    svc = make_repo(tmp_path)
+    (tmp_path / "a.txt").write_text("hi")
+    svc.stage("a.txt")
+    svc.commit("c1")
+    assert svc.current_branch() == "main"
+    svc.create_branch("dev")
+    assert svc.current_branch() == "dev"
