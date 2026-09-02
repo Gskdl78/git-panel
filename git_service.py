@@ -108,3 +108,36 @@ class GitService:
 
     def show_commit(self, sha: str) -> str:
         return self.run("show", "--stat", "--patch", sha).stdout
+
+    def push(self) -> GitResult:
+        return self.run("push", "-u", "origin", "HEAD")
+
+    def pull(self) -> GitResult:
+        return self.run("pull")
+
+    def fetch(self) -> GitResult:
+        return self.run("fetch")
+
+    def sync(self) -> GitResult:
+        # 尚未設定上游（或上游分支不存在）時，直接 push 建立追蹤分支
+        if not self.run("rev-parse", "--abbrev-ref", "@{upstream}").ok:
+            return self.push()
+        r = self.run("pull", "--rebase")
+        if not r.ok and "couldn't find remote ref" not in r.stderr.lower():
+            return r
+        return self.push()
+
+    def init(self) -> GitResult:
+        return self.run("init", "-b", "main")
+
+    @staticmethod
+    def clone(url: str, dest: str) -> GitResult:
+        p = subprocess.run(
+            ["git", "clone", url, dest],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            creationflags=subprocess.CREATE_NO_WINDOW,
+        )
+        return GitResult(p.returncode == 0, p.stdout, p.stderr, p.returncode)

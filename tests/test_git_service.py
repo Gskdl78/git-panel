@@ -102,3 +102,56 @@ def test_show_commit(tmp_path):
     svc.commit("c1")
     sha = svc.log()[0].sha
     assert "c1" in svc.show_commit(sha)
+
+
+def make_repo_with_remote(tmp_path):
+    remote = tmp_path / "remote.git"
+    GitService(str(tmp_path)).run("init", "--bare", "-b", "main", str(remote))
+    work = tmp_path / "work"
+    work.mkdir()
+    svc = make_repo(work)
+    svc.run("remote", "add", "origin", str(remote))
+    return svc, work, remote
+
+
+def test_push_and_ahead_count(tmp_path):
+    svc, work, _ = make_repo_with_remote(tmp_path)
+    (work / "a.txt").write_text("hi")
+    svc.stage("a.txt")
+    svc.commit("c1")
+    assert svc.push().ok
+    assert svc.status().ahead == 0
+    (work / "b.txt").write_text("hi")
+    svc.stage("b.txt")
+    svc.commit("c2")
+    assert svc.status().ahead == 1
+
+
+def test_sync_pull_then_push(tmp_path):
+    svc, work, _ = make_repo_with_remote(tmp_path)
+    (work / "a.txt").write_text("hi")
+    svc.stage("a.txt")
+    svc.commit("c1")
+    assert svc.sync().ok
+    assert svc.status().ahead == 0
+
+
+def test_clone(tmp_path):
+    svc, work, remote = make_repo_with_remote(tmp_path)
+    (work / "a.txt").write_text("hi")
+    svc.stage("a.txt")
+    svc.commit("c1")
+    svc.push()
+    dest = tmp_path / "cloned"
+    from git_service import GitService as GS
+
+    assert GS.clone(str(remote), str(dest)).ok
+    assert (dest / "a.txt").exists()
+
+
+def test_init(tmp_path):
+    d = tmp_path / "new"
+    d.mkdir()
+    svc = GitService(str(d))
+    assert svc.init().ok
+    assert svc.is_repo()
