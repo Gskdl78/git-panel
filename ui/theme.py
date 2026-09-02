@@ -64,12 +64,6 @@ QListWidget::item:hover {
     background-color: #2a2d2e;
 }
 
-QComboBox::drop-down {
-    background-color: #2d2d2d;
-    border-left: 1px solid #3c3c3c;
-    width: 16px;
-}
-
 QComboBox QAbstractItemView {
     background-color: #252526;
     color: #e0e0e0;
