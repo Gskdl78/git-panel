@@ -54,3 +54,40 @@ def test_status_no_ahead_behind_without_remote(tmp_path):
     svc = make_repo(tmp_path)
     st = svc.status()
     assert st.ahead == 0 and st.behind == 0
+
+
+def test_stage_unstage(tmp_path):
+    svc = make_repo(tmp_path)
+    (tmp_path / "a.txt").write_text("hi")
+    svc.stage("a.txt")
+    assert svc.status().files[0].staged
+    svc.unstage("a.txt")
+    assert not svc.status().files[0].staged
+
+
+def test_commit_and_log(tmp_path):
+    svc = make_repo(tmp_path)
+    (tmp_path / "a.txt").write_text("hi")
+    svc.stage("a.txt")
+    assert svc.commit("第一個提交").ok
+    commits = svc.log()
+    assert len(commits) == 1 and commits[0].subject == "第一個提交"
+    assert svc.status().files == []
+
+
+def test_diff_file(tmp_path):
+    svc = make_repo(tmp_path)
+    (tmp_path / "a.txt").write_text("line1\n")
+    svc.stage("a.txt")
+    svc.commit("c1")
+    (tmp_path / "a.txt").write_text("line1\nline2\n")
+    assert "+line2" in svc.diff_file("a.txt")
+
+
+def test_show_commit(tmp_path):
+    svc = make_repo(tmp_path)
+    (tmp_path / "a.txt").write_text("hi\n")
+    svc.stage("a.txt")
+    svc.commit("c1")
+    sha = svc.log()[0].sha
+    assert "c1" in svc.show_commit(sha)

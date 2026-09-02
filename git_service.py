@@ -36,6 +36,12 @@ class RepoStatus:
     files: list[FileChange] = field(default_factory=list)
 
 
+@dataclass
+class Commit:
+    sha: str
+    subject: str
+
+
 _BRANCH_RE = re.compile(r"^## (?:No commits yet on )?(.+?)(?:\.\.\.|$| \[)")
 
 
@@ -75,3 +81,30 @@ class GitService:
                     path = path.split(" -> ")[1]
                 st.files.append(FileChange(path.strip('"'), line[0], line[1]))
         return st
+
+    def stage(self, path: str) -> GitResult:
+        return self.run("add", "--", path)
+
+    def unstage(self, path: str) -> GitResult:
+        r = self.run("reset", "HEAD", "--", path)
+        if not r.ok:  # 還沒有任何 commit 時 HEAD 不存在
+            r = self.run("rm", "--cached", "-r", "--", path)
+        return r
+
+    def commit(self, message: str) -> GitResult:
+        return self.run("commit", "-m", message)
+
+    def log(self, n: int = 30) -> list[Commit]:
+        r = self.run("log", f"-{n}", "--pretty=%h\x1f%s")
+        return [
+            Commit(*line.split("\x1f", 1))
+            for line in r.stdout.splitlines()
+            if "\x1f" in line
+        ]
+
+    def diff_file(self, path: str, staged: bool = False) -> str:
+        args = ["diff", "--cached"] if staged else ["diff"]
+        return self.run(*args, "--", path).stdout
+
+    def show_commit(self, sha: str) -> str:
+        return self.run("show", "--stat", "--patch", sha).stdout
