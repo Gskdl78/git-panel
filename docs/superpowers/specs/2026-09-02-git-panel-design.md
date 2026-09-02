@@ -24,7 +24,7 @@
 - **PySide6**（Qt for Python）— GUI
 - **pywin32**（win32gui / win32process / win32con）— 視窗追蹤與磁吸
 - **subprocess** 執行 git 指令（不依賴第三方 git 函式庫，輸出好解析、行為透明）
-- 目標平台：Windows 11（Windows Terminal 與傳統主控台皆支援）
+- 目標平台：Windows 11 的 Windows Terminal（傳統主控台 conhost 的視窗由旁系子進程持有、不在祖先鏈上，實作不支援 — 面板會安靜退出，詳見 README 已知限制）
 
 ## 架構
 
