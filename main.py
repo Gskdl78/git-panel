@@ -20,6 +20,7 @@ from ui.file_list import FileListSection
 from ui.history_view import HistorySection
 from ui.panel import GitPanel
 from ui.simple_panel import SimplePanel
+from ui.theme import apply_dark_theme
 from window_tracker import WindowTracker, find_terminal_hwnd
 
 
@@ -105,6 +106,8 @@ def main() -> int:
     args = parser.parse_args()
 
     app = QApplication(sys.argv)
+    # app 層級的樣式表會傳到所有視窗與對話框（含 QInputDialog / QFileDialog / QMessageBox）
+    apply_dark_theme(app)
     # 順序很重要：find_terminal_hwnd 會沿祖先程序找「任何有視窗的祖先」當退路，
     # 必須在面板視窗建立／顯示之前呼叫，否則可能找到面板自己的視窗。
     hwnd = find_terminal_hwnd(args.pid)

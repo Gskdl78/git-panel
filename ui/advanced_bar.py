@@ -35,7 +35,9 @@ class AdvancedSection(QWidget):
         self.toggle = QToolButton()
         self.toggle.setText("進階 ▸")
         self.toggle.setCheckable(True)
-        self.toggle.setStyleSheet("border: none; color: #666;")
+        # background 明寫 transparent：app 層 QSS 會給 QToolButton 底色，
+        # 這顆是「像文字的展開切換」而非按鈕，需保留原本扁平外觀
+        self.toggle.setStyleSheet("border: none; background: transparent; color: #9a9a9a;")
         lay.addWidget(self.toggle)
 
         self.container = QWidget()

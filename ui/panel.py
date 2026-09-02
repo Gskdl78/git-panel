@@ -43,7 +43,7 @@ class GitPanel(QWidget):
     @staticmethod
     def _section_label(title: str) -> QLabel:
         lbl = QLabel(f"─── {title} ───")
-        lbl.setStyleSheet("color: #999; font-size: 11px;")
+        lbl.setStyleSheet("color: #9a9a9a; font-size: 11px;")
         return lbl
 
     def add_section(self, title: str, widget) -> None:

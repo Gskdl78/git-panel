@@ -29,7 +29,7 @@ class BranchSection(QWidget):
         self.btn_new = QPushButton("新增")
         self.btn_merge = QPushButton("合併")
         self.btn_abort = QPushButton("中止合併")
-        self.btn_abort.setStyleSheet("color: #c00000;")
+        self.btn_abort.setStyleSheet("color: #f14c4c;")
         self.btn_abort.hide()
         for b in (self.btn_switch, self.btn_new, self.btn_merge):
             row.addWidget(b)

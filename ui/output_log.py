@@ -18,15 +18,15 @@ class OutputLog(QTextEdit):
         self.setMaximumHeight(140)
 
     def log_command(self, command: str) -> None:
-        self.append(f'<span style="color:#888">&gt; {_fmt(command)}</span>')
+        self.append(f'<span style="color:#8a8a8a">&gt; {_fmt(command)}</span>')
 
     def log_ok(self, text: str = "完成 ✓") -> None:
-        self.append(f'<span style="color:#2a7a2a">{_fmt(text)}</span>')
+        self.append(f'<span style="color:#4ec94e">{_fmt(text)}</span>')
 
     def log_error(self, raw: str, explanation: str | None = None) -> None:
         if explanation:
             self.append(
-                f'<span style="color:#c00000;font-weight:bold">{_fmt(explanation)}</span>'
+                f'<span style="color:#f14c4c;font-weight:bold">{_fmt(explanation)}</span>'
             )
         if raw.strip():
-            self.append(f'<span style="color:#c00000">{_fmt(raw.strip())}</span>')
+            self.append(f'<span style="color:#f14c4c">{_fmt(raw.strip())}</span>')
