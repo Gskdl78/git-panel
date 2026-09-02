@@ -27,6 +27,7 @@ class GitPanel(QWidget):
         root.setSpacing(6)
 
         self.header = QLabel()
+        self.header.setWordWrap(True)  # 長資料夾/分支名換行而非被 320 固定寬裁切
         self.header.setStyleSheet("font-weight: bold; font-size: 13px;")
         root.addWidget(self.header)
 
