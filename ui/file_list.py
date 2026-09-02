@@ -3,6 +3,7 @@ from __future__ import annotations
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QDialog, QListWidget, QListWidgetItem, QPlainTextEdit, QVBoxLayout
 
+from errors import explain_error
 from git_service import RepoStatus
 
 
@@ -44,10 +45,14 @@ class FileListSection(QListWidget):
         path = item.text()
         if item.checkState() == Qt.Checked:
             self.panel.output.log_command(f"git add -- {path}")
-            self.panel.service.stage(path)
+            result = self.panel.service.stage(path)
         else:
             self.panel.output.log_command(f"git reset HEAD -- {path}")
-            self.panel.service.unstage(path)
+            result = self.panel.service.unstage(path)
+        if result.ok:
+            self.panel.output.log_ok()
+        else:
+            self.panel.output.log_error(result.text, explain_error(result))
         self.panel.refresh()
 
     def _on_double_clicked(self, item: QListWidgetItem) -> None:
