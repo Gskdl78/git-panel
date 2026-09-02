@@ -169,6 +169,9 @@ class GitService:
     def tag(self, name: str) -> GitResult:
         return self.run("tag", name)
 
+    def has_remote(self) -> bool:
+        return bool(self.run("remote").stdout.strip())
+
     @staticmethod
     def clone(url: str, dest: str) -> GitResult:
         p = subprocess.run(

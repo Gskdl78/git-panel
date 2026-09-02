@@ -13,6 +13,9 @@ _PATTERNS: list[tuple[str, str]] = [
     ("not something we can merge", "找不到要合併的分支：請確認分支名稱正確。"),
     ("Please commit your changes or stash", "有未提交的變更擋住了這個操作：請先「提交」，或用進階區的「暫存」把變更收起來再試。"),
     ("couldn't find remote ref", "遠端沒有這個分支：遠端倉庫上還沒有對應的分支可以拉取。"),
+    ("Name already exists", "GitHub 上已有同名倉庫：請換一個倉庫名稱，或改用「貼現有倉庫網址」連到既有的倉庫。"),
+    ("gh auth login", "尚未登入 GitHub CLI：請在終端機執行 gh auth login，用瀏覽器完成登入後再試一次。"),
+    ("Could not resolve hostname", "連不上 GitHub：請檢查網路連線後再試。"),
 ]
 
 

@@ -23,3 +23,12 @@ def test_auth():
 
 def test_unknown_returns_none():
     assert explain_error(err("some random error")) is None
+
+
+def test_gh_name_exists():
+    assert "同名" in explain_error(err("Name already exists on this account"))
+
+
+def test_gh_not_logged_in():
+    msg = explain_error(err("To get started with GitHub CLI, please run:  gh auth login"))
+    assert "gh auth login" in msg
