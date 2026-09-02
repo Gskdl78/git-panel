@@ -16,6 +16,7 @@ _PATTERNS: list[tuple[str, str]] = [
     ("Name already exists", "GitHub 上已有同名倉庫：請換一個倉庫名稱，或改用「貼現有倉庫網址」連到既有的倉庫。"),
     ("gh auth login", "尚未登入 GitHub CLI：請在終端機執行 gh auth login，用瀏覽器完成登入後再試一次。"),
     ("Could not resolve hostname", "連不上 GitHub：請檢查網路連線後再試。"),
+    ("error connecting to", "連不上 GitHub：請檢查網路連線後再試。"),
 ]
 
 

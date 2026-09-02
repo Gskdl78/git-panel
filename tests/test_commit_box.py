@@ -79,3 +79,19 @@ def test_sync_cancel_does_nothing(qtbot, tmp_path, monkeypatch):
     section.btn_sync.click()
     assert not remote_has_main(svc)  # 取消後未推送
     assert panel.output.toPlainText().strip() == ""
+
+
+def test_push_without_remote_opens_wizard(qtbot, tmp_path, monkeypatch):
+    svc, panel, section = make(qtbot, tmp_path, monkeypatch)
+    opened = []
+    monkeypatch.setattr("ui.commit_box.publish_wizard", lambda p: opened.append(p))
+    section.btn_push.click()
+    assert opened == [panel]
+
+
+def test_sync_without_remote_opens_wizard(qtbot, tmp_path, monkeypatch):
+    svc, panel, section = make(qtbot, tmp_path, monkeypatch)
+    opened = []
+    monkeypatch.setattr("ui.commit_box.publish_wizard", lambda p: opened.append(p))
+    section.btn_sync.click()
+    assert opened == [panel]

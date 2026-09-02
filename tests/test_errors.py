@@ -29,6 +29,10 @@ def test_gh_name_exists():
     assert "同名" in explain_error(err("Name already exists on this account"))
 
 
+def test_gh_network_error():
+    assert "連不上" in explain_error(err("error connecting to api.github.com"))
+
+
 def test_gh_not_logged_in():
     msg = explain_error(err("To get started with GitHub CLI, please run:  gh auth login"))
     assert "gh auth login" in msg

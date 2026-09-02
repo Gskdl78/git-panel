@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (
 from errors import explain_error
 from git_service import RepoStatus
 from ui.confirm_dialog import confirm
+from ui.publish_wizard import publish_wizard
 
 
 class CommitSection(QWidget):
@@ -64,6 +65,9 @@ class CommitSection(QWidget):
             self.message.clear()
 
     def _push(self) -> None:
+        if not self.panel.service.has_remote():
+            publish_wizard(self.panel)
+            return
         st = self.panel.status
         n = f"{st.ahead} 個" if st.ahead else "本地"
         self.panel.run_action(
@@ -80,6 +84,9 @@ class CommitSection(QWidget):
         )
 
     def _sync(self) -> None:
+        if not self.panel.service.has_remote():
+            publish_wizard(self.panel)
+            return
         st = self.panel.status
         if not confirm(
             self.panel,
