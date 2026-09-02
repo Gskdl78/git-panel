@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (
 
 from errors import explain_error
 from git_service import RepoStatus
+from ui.confirm_dialog import confirm
 
 
 class CommitSection(QWidget):
@@ -76,8 +77,6 @@ class CommitSection(QWidget):
         )
 
     def _sync(self) -> None:
-        from ui.confirm_dialog import confirm
-
         st = self.panel.status
         if not confirm(
             self.panel,

@@ -49,7 +49,7 @@ def test_commit_nothing_staged_blocked(qtbot, tmp_path, monkeypatch):
 
 
 def make_with_remote(qtbot, tmp_path, monkeypatch, accept=True):
-    """同步走自己的確認框（函式內 import），故改 patch ui.confirm_dialog.confirm。"""
+    """同步走自己的確認框（模組層 import），故 patch ui.commit_box.confirm。"""
     svc, work, _ = make_repo_with_remote(tmp_path)
     panel = GitPanel(svc)
     qtbot.addWidget(panel)
@@ -59,7 +59,7 @@ def make_with_remote(qtbot, tmp_path, monkeypatch, accept=True):
     svc.stage("a.txt")
     svc.commit("c1")
     panel.refresh()
-    monkeypatch.setattr("ui.confirm_dialog.confirm", lambda *a, **k: accept)
+    monkeypatch.setattr("ui.commit_box.confirm", lambda *a, **k: accept)
     return svc, panel, section
 
 
