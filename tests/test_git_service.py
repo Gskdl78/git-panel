@@ -42,6 +42,14 @@ def test_status_staged_file(tmp_path):
     assert st.files[0].staged
 
 
+def test_status_chinese_filename(tmp_path):
+    svc = make_repo(tmp_path)
+    (tmp_path / "中文檔名.txt").write_text("hi", encoding="utf-8")
+    st = svc.status()
+    assert st.files[0].path == "中文檔名.txt"
+    assert svc.run("add", "--", st.files[0].path).ok  # 路徑可回饋給 git 使用
+
+
 def test_status_no_ahead_behind_without_remote(tmp_path):
     svc = make_repo(tmp_path)
     st = svc.status()

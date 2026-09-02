@@ -45,7 +45,7 @@ class GitService:
 
     def run(self, *args: str) -> GitResult:
         p = subprocess.run(
-            ["git", "-C", self.repo_path, *args],
+            ["git", "-c", "core.quotepath=false", "-C", self.repo_path, *args],
             capture_output=True,
             text=True,
             encoding="utf-8",
