@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QDialog,
     QHBoxLayout,
@@ -16,11 +17,14 @@ def _build_dialog(parent, title: str, description: str, command: str, danger: bo
     lay = QVBoxLayout(dlg)
 
     desc = QLabel(description)
+    # 使用者內容（commit 訊息、網址）可能含標記，強制純文字避免被當富文字渲染
+    desc.setTextFormat(Qt.PlainText)
     desc.setWordWrap(True)
     lay.addWidget(desc)
 
     lay.addWidget(QLabel("將執行："))
     cmd = QLabel(command)
+    cmd.setTextFormat(Qt.PlainText)
     cmd.setWordWrap(True)
     cmd.setStyleSheet(
         "font-family: Consolas, monospace; background: #f2f2f2; padding: 6px; border-radius: 3px;"

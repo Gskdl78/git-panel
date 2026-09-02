@@ -55,5 +55,6 @@ def clone_dialog(parent, default_dir: str) -> tuple[str, str] | None:
     dest_parent = QFileDialog.getExistingDirectory(parent, "選擇要放在哪個資料夾", default_dir)
     if not dest_parent:
         return None
+    url = url.strip()
     repo_name = url.rstrip("/").split("/")[-1].removesuffix(".git")
-    return url.strip(), os.path.join(dest_parent, repo_name)
+    return url, os.path.join(dest_parent, repo_name)

@@ -1,5 +1,6 @@
 import copy
 
+import hook_setup
 from hook_setup import add_hook, remove_hook
 
 CMD = "pythonw C:/x/launch.py"
@@ -43,3 +44,22 @@ def test_remove_hook():
         for h in e.get("hooks", [])
     ]
     assert CMD not in all_cmds
+
+
+def test_save_load_roundtrip_atomic(tmp_path, monkeypatch):
+    # 絕不碰真正的 ~/.claude/settings.json
+    target = tmp_path / "claude" / "settings.json"
+    monkeypatch.setattr(hook_setup, "SETTINGS_PATH", str(target))
+
+    hook_setup._save(add_hook({}, CMD))
+
+    assert target.exists()
+    assert not (tmp_path / "claude" / "settings.json.tmp").exists()  # 暫存檔已被 replace 掉
+
+    loaded = hook_setup._load()
+    all_cmds = [
+        h["command"]
+        for e in loaded["hooks"]["SessionStart"]
+        for h in e["hooks"]
+    ]
+    assert CMD in all_cmds

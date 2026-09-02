@@ -51,8 +51,11 @@ def _load() -> dict:
 
 def _save(settings: dict) -> None:
     os.makedirs(os.path.dirname(SETTINGS_PATH), exist_ok=True)
-    with open(SETTINGS_PATH, "w", encoding="utf-8") as f:
+    # 原子寫入：先寫暫存檔再 replace，避免中途中斷時截斷使用者的 settings.json
+    tmp = SETTINGS_PATH + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
         json.dump(settings, f, ensure_ascii=False, indent=2)
+    os.replace(tmp, SETTINGS_PATH)
 
 
 def main() -> None:

@@ -56,6 +56,7 @@ class GitService:
             text=True,
             encoding="utf-8",
             errors="replace",
+            stdin=subprocess.DEVNULL,
             creationflags=subprocess.CREATE_NO_WINDOW,
         )
         return GitResult(p.returncode == 0, p.stdout, p.stderr, p.returncode)
@@ -144,7 +145,7 @@ class GitService:
         return self.run("switch", "-c", name)
 
     def merge(self, name: str) -> GitResult:
-        return self.run("merge", name)
+        return self.run("merge", "--no-edit", name)
 
     def abort_merge(self) -> GitResult:
         return self.run("merge", "--abort")
@@ -176,6 +177,7 @@ class GitService:
             text=True,
             encoding="utf-8",
             errors="replace",
+            stdin=subprocess.DEVNULL,
             creationflags=subprocess.CREATE_NO_WINDOW,
         )
         return GitResult(p.returncode == 0, p.stdout, p.stderr, p.returncode)

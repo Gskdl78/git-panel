@@ -37,6 +37,17 @@ def test_danger_dialog_enter_defaults_to_cancel(qtbot):
     assert buttons["取消"].isDefault()
 
 
+def test_confirm_dialog_labels_are_plain_text(qtbot):
+    from PySide6.QtCore import Qt
+    from PySide6.QtWidgets import QLabel
+    from ui.confirm_dialog import _build_dialog
+    dlg = _build_dialog(None, "提交", "訊息：「<b>粗體</b>」", "git commit -m <b>粗體</b>", False)
+    qtbot.addWidget(dlg)
+    desc = next(l for l in dlg.findChildren(QLabel) if "訊息" in l.text())
+    assert "<b>" in desc.text()
+    assert desc.textFormat() == Qt.PlainText
+
+
 def test_output_log_preserves_newlines(qtbot):
     from ui.output_log import OutputLog
     log = OutputLog()
