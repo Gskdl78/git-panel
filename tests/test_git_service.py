@@ -84,6 +84,17 @@ def test_diff_file(tmp_path):
     assert "+line2" in svc.diff_file("a.txt")
 
 
+def test_diff_file_staged(tmp_path):
+    svc = make_repo(tmp_path)
+    (tmp_path / "a.txt").write_text("line1\n")
+    svc.stage("a.txt")
+    svc.commit("c1")
+    (tmp_path / "a.txt").write_text("line1\nline2\n")
+    svc.stage("a.txt")
+    assert "+line2" in svc.diff_file("a.txt", staged=True)
+    assert svc.diff_file("a.txt") == ""  # 已全部進暫存區，工作區無差異
+
+
 def test_show_commit(tmp_path):
     svc = make_repo(tmp_path)
     (tmp_path / "a.txt").write_text("hi\n")
